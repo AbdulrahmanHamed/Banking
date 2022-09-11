@@ -1,0 +1,218 @@
+openapi: 3.0.3
+info:
+  title: Banking App
+  description: |-
+    Simple Banking App
+  contact:
+    email: abdelrahmanh.habashi@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: /banking/v1
+tags:
+  - name: customer
+    description: Everything about Customers
+  - name: balance
+    description: Actions for balance
+paths:
+  /customer:
+    put:
+      tags:
+        - customer
+      summary: Update an existing customer
+      description: Update an existing customer
+      operationId: updateCustomer
+      requestBody:
+        description: Update customer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerPut'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+        '404':
+          description: Customer not found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - customer
+      summary: Add a new customer
+      description: Add a new customer
+      operationId: addCustomer
+      requestBody:
+        description: Create a new customer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Bad request
+  /customer/{customerId}/balance:
+    get:
+      tags:
+        - balance
+      summary: Get customer balance
+      description: Get customer balance
+      operationId: getCustomerBalance
+      parameters:
+        - name: customerId
+          in: path
+          description: Customer ID
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Balance'
+        '404':
+          description: Customer not found
+  /customer/{customerId}/balance/deposit:
+    post:
+      tags:
+        - balance
+      summary: Deposit money
+      description: Deposit money
+      operationId: deposit
+      parameters:
+        - name: customerId
+          in: path
+          description: Customer ID
+          required: true
+          schema:
+            type: number
+      requestBody:
+        description: Deposit money
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deposit'
+        required: true
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+  /customer/{customerId}/balance/withdraw:
+    post:
+      tags:
+        - balance
+      summary: Withdraw money
+      description: Withdraw money
+      operationId: withdraw
+      parameters:
+        - name: customerId
+          in: path
+          description: Customer ID
+          required: true
+          schema:
+            type: number
+      requestBody:
+        description: Withdraw money
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Withdraw'
+        required: true
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int32
+          example: 10
+        firstName:
+          type: string
+          example: 'Ahmed'
+        lastName:
+          type: string
+          example: 'Mohamed'
+        balance:
+          type: number
+          format: decimal
+
+    CustomerCreate:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "Ahmed"
+        lastName:
+          type: string
+          example: "Ali"
+        balance:
+          type: number
+          format: decimal
+        status:
+          type: string
+          description: Customer Status
+          example: active
+          enum:
+            - active
+            - inactive
+    CustomerPut:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        firstName:
+          type: integer
+          format: int64
+          example: 198772
+        lastName:
+          type: integer
+          format: int32
+          example: 7
+        status:
+          type: string
+          description: Customer Status
+          example: active
+          enum:
+            - active
+            - inactive
+    Balance:
+      type: object
+      properties:
+        balance:
+          type: number
+          example: 10569
+    Deposit:
+      type: object
+      properties:
+        amount:
+          type: number
+          example: 10569
+    Withdraw:
+      type: object
+      properties:
+        amount:
+          type: number
+          example: 10569
+
